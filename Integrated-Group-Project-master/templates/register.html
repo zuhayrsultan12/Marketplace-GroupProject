@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register | Student Market</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .register-container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; }
+        h2 { text-align: center; color: #333; margin-bottom: 20px; }
+        
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; font-size: 0.9em; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-size: 1em; }
+        
+        .security-section { background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef; margin-bottom: 20px; }
+        .security-section h3 { margin-top: 0; font-size: 1em; color: #007bff; }
+        
+        .btn { width: 100%; background: #007bff; color: white; padding: 12px; border: none; border-radius: 5px; font-size: 1.1em; cursor: pointer; transition: 0.3s; }
+        .btn:hover { background: #0056b3; }
+        .footer-links { text-align: center; margin-top: 15px; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+<div class="register-container">
+    <h2>Create Account</h2>
+
+    <form action="/register" method="POST">
+        <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" name="full_name" placeholder="John Doe" required>
+        </div>
+
+        <div class="form-group">
+            <label>University Email</label>
+            <input type="email" name="email" placeholder="name@uni.ac.uk" required>
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Create a strong password" required>
+        </div>
+
+        <div class="form-group">
+            <label>University</label>
+            <input type="text" name="university" placeholder="e.g. University of Brighton" required>
+        </div>
+
+        <div class="form-group">
+            <label>Location (Area)</label>
+            <input type="text" name="location" placeholder="e.g. Elm Grove" required>
+        </div>
+
+        <div class="security-section">
+            <h3>Account Recovery Setup</h3>
+            <div class="form-group">
+                <label>Security Question</label>
+                <select name="recovery_question" required>
+                    <option value="What was your first pet's name?">What was your first pet's name?</option>
+                    <option value="What city were you born in?">What city were you born in?</option>
+                    <option value="What was your first car?">What was your first car?</option>
+                    <option value="What is your mother's maiden name?">What is your mother's maiden name?</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Security Answer</label>
+                <input type="text" name="recovery_answer" placeholder="Your secret answer" required>
+            </div>
+        </div>
+        <button type="submit" class="btn">Register Now</button>
+    </form>
+
+    <div class="footer-links">
+        Already have an account? <a href="/login">Log in here</a>
+    </div>
+</div>
+</body>
+</html>

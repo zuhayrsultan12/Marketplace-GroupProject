@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Checkout | Student Market</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 30px; color: #1c1e21; }
+        .checkout-wrap { max-width: 950px; margin: 0 auto; display: grid; grid-template-columns: 1fr 360px; gap: 25px; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        label { display: block; font-weight: bold; margin: 15px 0 6px; }
+        input, select, textarea { width: 100%; padding: 11px; border: 1px solid #ddd; border-radius: 7px; box-sizing: border-box; }
+        .btn { background: #28a745; color: white; border: none; padding: 13px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; margin-top: 20px; width: 100%; }
+        .price { color: #28a745; font-size: 1.6em; font-weight: bold; }
+        .mock-note { background: #fff3cd; color: #856404; padding: 12px; border-radius: 8px; margin-bottom: 15px; }
+        .back { display: inline-block; margin-bottom: 20px; color: #007bff; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <a href="/item/{{ item['id'] }}" class="back">← Back to item</a>
+
+    <div class="checkout-wrap">
+        <section class="card">
+            <h1>Mock Checkout</h1>
+            <div class="mock-note">
+                <!-- ZS Explains that this checkout is for demonstration purposes and does not take real payment. -->
+                This is a mock checkout. No real payment is taken.
+            </div>
+
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for message in messages %}
+                  <div style="background:#f8d7da; color:#721c24; padding:12px; border-radius:8px; margin-bottom:10px;">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+                <label>Delivery Method</label>
+                <select name="delivery_method" required>
+                    <!-- ZS Lets the buyer choose a delivery option. -->
+                    <option value="Campus collection">Campus collection</option>
+                    <option value="Local delivery">Local delivery</option>
+                    <option value="Posted delivery">Posted delivery</option>
+                </select>
+
+                <label>Shipping / Collection Address</label>
+                <textarea name="shipping_address" rows="4" placeholder="Enter address, campus building, or collection notes" required></textarea>
+
+                <label>Mock Payment Method</label>
+                <select name="payment_method" required>
+                    <!-- ZS does not store real payment details. -->
+                    <option value="Mock Visa">Mock Visa</option>
+                    <option value="Mock Mastercard">Mock Mastercard</option>
+                    <option value="Mock Student credit Pay">Mock Student Pay</option>
+                </select>
+
+                <label>Name on Mock Card</label>
+                <input type="text" name="card_name" placeholder="Example Student" required>
+
+                <label>Mock Card Number</label>
+                <input type="text" name="card_number" placeholder="4242 4242 4242 4242" required>
+
+                <button type="submit" class="btn">Confirm Mock Payment</button>
+            </form>
+        </section>
+
+        <aside class="card">
+            <h2>Order Summary</h2>
+            <p><strong>{{ item['title'] }}</strong></p>
+            <p>Seller: {{ item['seller_name'] }}</p>
+            <p>Category: {{ item['category'] }}</p>
+            <p class="price">£{{ "%.2f"|format(item['price']) }}</p>
+            <hr>
+            <p style="color:#666;">After confirming, the listing will be marked as sold and the transaction will appear in your order history.</p>
+        </aside>
+    </div>
+</body>
+</html>

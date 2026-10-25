@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ item['title'] }} | Student Market</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 20px; 
+            background: #f4f4f4; 
+        }
+
+        .item-container { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+
+        .price { 
+            font-size: 24px; 
+            color: #28a745; 
+            font-weight: bold; 
+        }
+
+        .category { 
+            color: #666; 
+            font-style: italic; 
+        }
+
+        .seller-info { 
+            margin-top: 20px; 
+            padding: 15px; 
+            background: #e9ecef; 
+            border-radius: 5px; 
+        }
+
+        .btn-message { 
+            display: inline-block; 
+            background: #007bff; 
+            color: white; 
+            padding: 10px 20px; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            margin-top: 15px; 
+        }
+
+        /* ZS Styles the mock checkout button and sold label on the item page. */
+        .btn-checkout { 
+            display: inline-block; 
+            background: #28a745; 
+            color: white; 
+            padding: 12px 22px; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            margin-top: 15px; 
+            font-weight: bold; 
+            border: none; 
+            cursor: pointer; 
+        }
+
+        .sold-label { 
+            display: inline-block; 
+            background: #dc3545; 
+            color: white; 
+            padding: 10px 15px; 
+            border-radius: 5px; 
+            margin-top: 15px; 
+            font-weight: bold; 
+        }
+
+        /* ZS Styles the seller rating text shown before checkout. */
+        .seller-rating {
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <a href="/">← Back to Marketplace</a>
+
+    <div class="item-container" style="margin-top: 20px;">
+        <h1>{{ item['title'] }}</h1>
+        <p class="category">{{ item['category'] }} • {{ item['location'] }}</p>
+        <p class="price">£{{ item['price'] }}</p>
+        
+        <h3>Description</h3>
+        <p>{{ item['description'] }}</p>
+
+        <div class="seller-info">
+            <p>Listed by: <strong>{{ item['seller_name'] }}</strong></p>
+
+            <!-- ZS Shows the seller's average rating on the item page before checkout. -->
+            <div class="seller-rating">
+                {% if seller_rating and seller_rating['review_count'] > 0 %}
+                    <p>
+                        Seller Rating:
+                        <strong>{{ "%.1f"|format(seller_rating['average_rating']) }} / 5 stars</strong>
+                        from {{ seller_rating['review_count'] }} review(s)
+                    </p>
+                {% else %}
+                    <p>Seller Rating: No reviews yet</p>
+                {% endif %}
+            </div>
+
+            <a href="/chat/{{ item['id'] }}" class="btn-message">Message Seller</a>
+
+            {% if item['is_sold'] %}
+                <!-- ZS Shows users that the checkout is closed after an item has been bought. -->
+                <span class="sold-label">Sold</span>
+            {% elif session.get('user_id') and session.get('user_id') != item['seller_id'] %}
+                <!-- ZS Sends logged-in buyers to the checkout page. -->
+                <a href="/checkout/{{ item['id'] }}" class="btn-checkout">Buy Now - Mock Checkout</a>
+            {% elif not session.get('user_id') %}
+                <!-- ZS Sends guests to login before they can buy an item. -->
+                <a href="/login" class="btn-checkout">Login to Buy</a>
+                {% endif %}
+            {% if session.get('user_id') and session.get('user_id') != item['seller_id'] and not item['is_sold'] %}
+                {% if is_bookmarked %}
+                    <form action="{{ url_for('remove_bookmark', item_id=item['id']) }}" method="POST" style="display:inline; margin-left:8px;">
+                        <button type="submit" style="background:#ffc107; color:#000; border:none; padding:10px 16px; border-radius:5px; font-weight:bold; cursor:pointer;">
+                            ★ Remove Bookmark
+                        </button>
+                    </form>
+                {% else %}
+                    <form action="{{ url_for('bookmark_item', item_id=item['id']) }}" method="POST" style="display:inline; margin-left:8px;">
+                        <button type="submit" style="background:#6c757d; color:white; border:none; padding:10px 16px; border-radius:5px; font-weight:bold; cursor:pointer;">
+                            ☆ Bookmark Item
+                        </button>
+                    </form>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

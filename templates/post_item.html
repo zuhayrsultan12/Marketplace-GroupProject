@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sell an Item | Student Market</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .post-container { background: white; padding: 35px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 100%; max-width: 500px; margin: 20px; }
+        h2 { text-align: center; color: #333; margin-top: 0; margin-bottom: 5px; }
+        p.subtitle { text-align: center; color: #666; font-size: 0.9em; margin-bottom: 25px; }
+        
+        .form-group { margin-bottom: 18px; }
+        label { display: block; font-weight: 600; margin-bottom: 5px; color: #444; font-size: 0.9em; }
+        input, select, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; font-size: 1em; font-family: inherit; }
+        textarea { resize: vertical; min-height: 100px; }
+        
+        .price-wrapper { position: relative; }
+        .price-wrapper span { position: absolute; left: 12px; top: 12px; color: #666; font-weight: bold; }
+        .price-wrapper input { padding-left: 25px; }
+
+        .btn { width: 100%; background: #28a745; color: white; padding: 14px; border: none; border-radius: 6px; font-size: 1.1em; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn:hover { background: #218838; }
+        .cancel-link { display: block; text-align: center; margin-top: 15px; color: #dc3545; text-decoration: none; font-size: 0.9em; }
+        
+        .flash-msg { padding: 10px; background: #f8d7da; color: #721c24; border-radius: 6px; margin-bottom: 20px; text-align: center; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+<div class="post-container">
+    <h2>Post a New Item</h2>
+    <p class="subtitle">Turn your unwanted uni stuff into cash.</p>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="flash-msg">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form action="/post_item" method="POST">
+        <div class="form-group">
+            <label>Item Title</label>
+            <input type="text" name="title" placeholder="e.g. Pre-owned Microeconomics Textbook" required>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+                <label>Price</label>
+                <div class="price-wrapper">
+                    <span>£</span>
+                    <input type="number" name="price" step="0.01" min="0" placeholder="15.00" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <select name="category" required>
+                    <option value="" disabled selected>Select...</option>
+                    <option value="Textbooks">Textbooks</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Furniture">Furniture</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label>Pickup Location</label>
+            <input type="text" name="location" placeholder="e.g. Library Cafe or Elm Grove" required>
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea name="description" placeholder="Condition, edition, any wear and tear..." required></textarea>
+        </div>
+        <button type="submit" class="btn">Post Listing</button>
+    </form>
+    <a href="/profile" class="cancel-link">Cancel and go back</a>
+</div>
+
+</body>
+</html>

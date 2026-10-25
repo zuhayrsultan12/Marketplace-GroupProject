@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reset Password | Student Market</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .recover-container { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        h2 { text-align: center; color: #333; margin-bottom: 10px; }
+        p.subtitle { text-align: center; color: #666; font-size: 0.9em; margin-bottom: 25px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; font-size: 0.9em; }
+        input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-size: 1em; }
+        .flash-messages { color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; padding: 10px; border-radius: 5px; margin-bottom: 20px; font-size: 0.9em; }
+        .btn { width: 100%; background: #28a745; color: white; padding: 12px; border: none; border-radius: 5px; font-size: 1.1em; cursor: pointer; transition: 0.3s; }
+        .btn:hover { background: #218838; }
+        .footer-links { text-align: center; margin-top: 20px; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+<div class="recover-container">
+    <h2>Reset Password</h2>
+    <p class="subtitle">Verify your identity to choose a new password.</p>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="flash-messages">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form action="/recover" method="POST">
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" name="email" placeholder="Enter your registered email" required>
+        </div>
+        <div class="form-group" style="background: #fff3cd; padding: 10px; border-radius: 5px; border: 1px solid #ffeeba;">
+            <label>Security Answer</label>
+            <input type="text" name="recovery_answer" placeholder="Your secret answer" required>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+        <div class="form-group">
+            <label>New Password</label>
+            <input type="password" name="new_password" placeholder="Min 8 characters" required>
+        </div>
+        <div class="form-group">
+            <label>Confirm New Password</label>
+            <input type="password" name="confirm_new_password" placeholder="Repeat new password" required>
+        </div>
+        <button type="submit" class="btn">Update Password</button>
+    </form>
+    <div class="footer-links">
+        Remembered it? <a href="/login">Back to Login</a>
+    </div>
+</div>
+</body>
+</html>

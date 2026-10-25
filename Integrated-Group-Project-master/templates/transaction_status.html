@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Transaction Status | Student Market</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f4f4f4;
+        }
+
+        .transaction-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .info-row {
+            margin: 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-row strong {
+            display: inline-block;
+            width: 170px;
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .seller-update {
+            margin-top: 25px;
+            padding: 20px;
+            background: #e9ecef;
+            border-radius: 10px;
+        }
+
+        .seller-update select {
+            padding: 10px;
+            width: 100%;
+            margin-top: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .seller-update button {
+            margin-top: 12px;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* ZS Styles the seller review form after checkout/payment. */
+        .review-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        /* ZS Keeps review labels readable. */
+        .review-section label {
+            display: block;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+
+        /* ZS Makes review input fields match the rest of the site. */
+        .review-section select,
+        .review-section textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+        }
+
+        /* ZS Styles the review submit button. */
+        .review-section button {
+            margin-top: 15px;
+            background: #ffc107;
+            color: #000;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* ZS Styles the message shown after a buyer has already reviewed this specific purchase. */
+        .review-complete {
+            margin-top: 25px;
+            padding: 20px;
+            background: #d4edda;
+            color: #155724;
+            border-radius: 10px;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('profile') }}" class="btn-back">← Back to Profile</a>
+
+    <div class="transaction-container">
+        <h1>Transaction Status</h1>
+
+        <p>
+            Current Status:
+            <span class="status-badge">{{ order['status'] }}</span>
+        </p>
+
+        <div class="info-row">
+            <strong>Transaction ID:</strong>
+            {{ order['transaction_id'] }}
+        </div>
+
+        <div class="info-row">
+            <strong>Item:</strong>
+            {{ order['item_title'] }}
+        </div>
+
+        <div class="info-row">
+            <strong>Price:</strong>
+            £{{ order['price'] }}
+        </div>
+
+        <div class="info-row">
+            <strong>Buyer:</strong>
+            {{ order['buyer_name'] }}
+        </div>
+
+        <div class="info-row">
+            <strong>Seller:</strong>
+            {{ order['seller_name'] }}
+        </div>
+
+        <div class="info-row">
+            <strong>Delivery Method:</strong>
+            {{ order['delivery_method'] }}
+        </div>
+
+        <div class="info-row">
+            <strong>Shipping Address:</strong>
+            {{ order['shipping_address'] }}
+        </div>
+
+        <div class="info-row">
+            <strong>Payment Method:</strong>
+            {{ order['payment_method'] }}
+        </div>
+
+        <div class="info-row">
+            <strong>Purchase Date:</strong>
+            {{ order['purchase_date'] }}
+        </div>
+
+        <div class="info-row">
+            <strong>Last Updated:</strong>
+            {{ order['last_updated'] }}
+        </div>
+
+        {% if session.get('user_id') == order['seller_id'] %}
+            <!-- ZS Lets only the seller update the transaction status after payment. -->
+            <div class="seller-update">
+                <h2>Update Transaction Status</h2>
+
+                <form action="{{ url_for('update_transaction_status', order_id=order['id']) }}" method="POST">
+                    <label for="status">Choose new status</label>
+
+                    <select name="status" id="status" required>
+                        <option value="Payment confirmed" {% if order['status'] == 'Payment confirmed' %}selected{% endif %}>Payment confirmed</option>
+                        <option value="Seller preparing item" {% if order['status'] == 'Seller preparing item' %}selected{% endif %}>Seller preparing item</option>
+                        <option value="Ready for collection" {% if order['status'] == 'Ready for collection' %}selected{% endif %}>Ready for collection</option>
+                        <option value="Dispatched" {% if order['status'] == 'Dispatched' %}selected{% endif %}>Dispatched</option>
+                        <option value="Completed" {% if order['status'] == 'Completed' %}selected{% endif %}>Completed</option>
+                        <option value="Cancelled" {% if order['status'] == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                    </select>
+
+                    <button type="submit">Update Status</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+
+    {% if session.get('user_id') == order['buyer_id'] %}
+        {% if existing_review %}
+            <!-- ZS Shows the buyer that they already reviewed this exact purchased item. -->
+            <div class="review-complete">
+                <strong>Review submitted.</strong>
+                You have already reviewed {{ order['seller_name'] }} for this item.
+            </div>
+        {% else %}
+            <!-- ZS Shows the seller review form only to the buyer after mock payment has created a transaction. -->
+            <div class="review-section">
+                <h2>Review Seller</h2>
+                <p>You can now review {{ order['seller_name'] }} because your payment has been confirmed.</p>
+
+                <form action="{{ url_for('submit_review', order_id=order['id']) }}" method="POST">
+                    <label for="rating">Rating</label>
+
+                    <select name="rating" id="rating" required>
+                        <option value="">Choose a rating</option>
+                        <option value="5">5 stars - Excellent</option>
+                        <option value="4">4 stars - Good</option>
+                        <option value="3">3 stars - Okay</option>
+                        <option value="2">2 stars - Poor</option>
+                        <option value="1">1 star - Bad</option>
+                    </select>
+
+                    <label for="comment">Comment</label>
+
+                    <textarea 
+                        name="comment" 
+                        id="comment" 
+                        rows="4" 
+                        placeholder="Write your review here..." 
+                        required></textarea>
+
+                    <button type="submit">Submit Review</button>
+                </form>
+            </div>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
